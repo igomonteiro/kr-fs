@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -49,7 +48,7 @@ export function CsvForm() {
     const chunkProgress = 100 / totalChunks;
     let key = 0;
     let start = 0;
-    let end = 0;
+    let end = Math.min(chunkSize, file.size);
 
     const uploadNextChunk = async () => {
       if (end <= file.size) {
@@ -67,7 +66,6 @@ export function CsvForm() {
           });
           const temp = `Chunk ${key + 1}/${totalChunks} uploaded successfully`;
           setProgress(Number((key + 1) * chunkProgress));
-          console.log(temp);
           key++;
           start = end;
           end = start + chunkSize;
@@ -106,10 +104,8 @@ export function CsvForm() {
                   disabled={isSubmitting}
                 />
               </FormControl>
-              <FormDescription>
-                {isSubmitting && <Progress value={progress} />}
-              </FormDescription>
               <FormMessage />
+              {isSubmitting && <Progress value={progress} />}
             </FormItem>
           )}
         />
