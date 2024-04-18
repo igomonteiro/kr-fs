@@ -9,7 +9,7 @@ export class Product {
   code: number;
 
   @Prop()
-  description: Date;
+  description: string;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

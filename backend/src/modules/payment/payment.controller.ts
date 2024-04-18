@@ -9,20 +9,16 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   HttpCode,
+  Query,
 } from "@nestjs/common";
 import { PaymentService } from "./payment.service";
 import { FileInterceptor } from "@nestjs/platform-express";
-import * as fs from "node:fs";
-import * as path from "node:path";
-import { UploadService } from "src/shared/upload/upload.service";
 import { UploadFileDto } from "src/shared/upload/dto/upload-file.dto";
+import { PaginationDto } from "src/shared/dto/pagination.dto";
 
 @Controller("payments")
 export class PaymentController {
-  constructor(
-    private readonly paymentService: PaymentService,
-    private readonly uploadService: UploadService,
-  ) {}
+  constructor(private readonly paymentService: PaymentService) {}
 
   @Post("upload")
   @HttpCode(204)
@@ -36,27 +32,12 @@ export class PaymentController {
     file: Express.Multer.File,
     @Body() uploadFileDto: UploadFileDto,
   ) {
-    const { key, totalChunks, filename } = uploadFileDto;
-    const fileChunk = file.buffer;
-
-    const uploadPath = path.join(__dirname, "..", "..", "uploads");
-
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath);
-    }
-
-    const chunkPath = `${uploadPath}/${filename}.part_${key}`;
-
-    await fs.promises.writeFile(chunkPath, fileChunk);
-
-    if (key === totalChunks - 1) {
-      await this.uploadService.mergeChunks(filename, totalChunks);
-    }
+    return this.paymentService.upload(file, uploadFileDto);
   }
 
   @Get()
-  findAll() {
-    return this.paymentService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.paymentService.findAll(paginationDto);
   }
 
   @Get(":id")

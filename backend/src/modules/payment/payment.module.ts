@@ -3,10 +3,16 @@ import { PaymentService } from "./payment.service";
 import { PaymentController } from "./payment.controller";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Payment, PaymentSchema } from "./schemas/payment.schema";
-import { Contract, ContractSchema } from "./schemas/contract.schema";
-import { Product, ProductSchema } from "./schemas/product.schema";
-import { Installment, InstallmentSchema } from "./schemas/installment.schema";
-import { Customer, CustomerSchema } from "./schemas/customer.schema";
+import { Contract, ContractSchema } from "../contract/schemas/contract.schema";
+import { PaymentUploadedListener } from "./listeners/payment-uploaded.listener";
+import { BullModule } from "@nestjs/bull";
+import { PaymentConsumer } from "./payment.consumer";
+import { Customer, CustomerSchema } from "../customer/schemas/customer.schema";
+import {
+  Installment,
+  InstallmentSchema,
+} from "../installment/schemas/installment.schema";
+import { Product, ProductSchema } from "../product/schemas/product.schema";
 
 @Module({
   imports: [
@@ -32,8 +38,11 @@ import { Customer, CustomerSchema } from "./schemas/customer.schema";
         schema: ProductSchema,
       },
     ]),
+    BullModule.registerQueue({
+      name: "payments",
+    }),
   ],
   controllers: [PaymentController],
-  providers: [PaymentService],
+  providers: [PaymentService, PaymentUploadedListener, PaymentConsumer],
 })
 export class PaymentModule {}

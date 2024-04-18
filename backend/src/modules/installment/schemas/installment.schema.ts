@@ -1,5 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
+import {
+  InstallmentExpirationStatus,
+  InstallmentStatus,
+} from "../entities/installment.entity";
 
 export type InstallmentDocument = HydratedDocument<Installment>;
 
@@ -7,6 +11,9 @@ export type InstallmentDocument = HydratedDocument<Installment>;
 export class Installment {
   @Prop()
   sequence_number: number;
+
+  @Prop()
+  type: string;
 
   @Prop()
   expiration_date: Date;
@@ -34,13 +41,13 @@ export class Installment {
 
   @Prop({
     type: String,
-    enum: ["OPEN", "CLOSED"],
+    enum: InstallmentStatus,
   })
   status: string;
 
   @Prop({
     type: String,
-    enum: ["EXPIRED", "REGULAR"],
+    enum: InstallmentExpirationStatus,
   })
   expiration_status: string;
 }
