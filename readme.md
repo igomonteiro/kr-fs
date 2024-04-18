@@ -27,3 +27,5 @@ You can use the mock csv files from this repository to test the application
 ## Important notes
 
 Don't forget to create a .env file using the .env.example file as sample in the backend, also if you are executing the project locally, use **localhost** as the host for redis and mongo database url.
+
+I used Tanstack Query for server-side state management, no client-side state management library needed.
