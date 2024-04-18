@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { httpClient } from "@/services/httpClient";
 
 const ACCEPTED_FILE_TYPES = ["text/csv"];
 const MAX_FILE_SIZE = 30 * 1024 * 1024 * 1024; // 30GB
@@ -60,11 +61,9 @@ export function CsvForm() {
         formData.append("filename", file.name);
 
         try {
-          await fetch("http://localhost:3333/payments/upload", {
-            method: "POST",
-            body: formData,
+          await httpClient.post("/payments/upload", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
           });
-          const temp = `Chunk ${key + 1}/${totalChunks} uploaded successfully`;
           setProgress(Number((key + 1) * chunkProgress));
           key++;
           start = end;

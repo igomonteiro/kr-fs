@@ -1,3 +1,4 @@
+import { Contract } from "./Contract";
 import { Customer } from "./Customer";
 
 export type Payment = {
@@ -8,4 +9,5 @@ export type Payment = {
   proposalNumber: number;
   customer: Customer;
   isValid: boolean;
+  contracts: Contract[];
 };

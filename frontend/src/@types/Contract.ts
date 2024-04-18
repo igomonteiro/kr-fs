@@ -3,9 +3,9 @@ import { Product } from "./Product";
 
 export type Contract = {
   number: number;
-  date: Date;
+  date: string;
   installmentsQuantity: number;
   totalValue: number;
-  Product: Product;
+  product: Product;
   installments: Installment[];
 };
